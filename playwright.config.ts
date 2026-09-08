@@ -85,6 +85,4 @@ export default defineConfig({
   //   reuseExistingServer: !process.env.CI,
   // },
   //
-  globalSetup: require.resolve('./tests/global-setup.ts'),
-  globalTeardown: require.resolve('./tests/global-teardown.ts'),
 });
