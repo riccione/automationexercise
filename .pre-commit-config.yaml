@@ -3,7 +3,7 @@ repos:
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
-        types_or: [ts, js, json, yml, yaml]
+        types_or: [ts, javascript, json, yaml]
 
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: v10.6.0
