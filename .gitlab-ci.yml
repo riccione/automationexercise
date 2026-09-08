@@ -1,0 +1,54 @@
+image: mcr.microsoft.com/playwright:v1.52.0-noble
+
+stages:
+  - quality
+  - test
+
+variables:
+  CI: 'true'
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+
+playwright:
+  stage: test
+  timeout: 60m
+  before_script:
+    - npm ci --cache .npm
+    - npx playwright install --with-deps
+  script:
+    - npx playwright test
+    - npx allure generate allure-results --clean -o allure-report
+  artifacts:
+    when: always
+    paths:
+      - reports/
+      - allure-results/
+      - allure-report/
+    expire_in: 30 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  except:
+    changes:
+      - '**.md'
+      - LICENSE
+
+quality:
+  stage: quality
+  before_script:
+    - npm ci --cache .npm
+  script:
+    - npm run lint:check
+    - npm run format:check
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  except:
+    changes:
+      - '**.md'
+      - LICENSE
